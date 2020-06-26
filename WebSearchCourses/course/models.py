@@ -8,11 +8,29 @@ from WebSearchCourses.utils import unique_slug_generator
 class Language(models.Model):
     name = models.CharField(max_length=255, blank=True, null=True)
 
+    def __str__(self):
+        return self.name
+
+    def __unicode__(self):
+        return self.name
+
 class Level(models.Model):
     name = models.CharField(max_length=255, blank=True, null=True)
 
+    def __str__(self):
+        return self.name
+
+    def __unicode__(self):
+        return self.name
+
 class Subject(models.Model):
     name = models.CharField(max_length=255, blank=True, null=True)
+
+    def __str__(self):
+        return self.name
+
+    def __unicode__(self):
+        return self.name
 
 class Course(models.Model):
     name        = models.TextField(blank=True, null=True)
