@@ -65,7 +65,7 @@ class Command(BaseCommand):
         self.clear()
         print('Saving data to file: edx_data.json')
         json_data = json.dumps(result)
-        file = open("../../../edx_data.json", "w")
+        file = open("edx_data.json", "w")
         file.write(json_data)
         print('Save data to file success!')
         file.close()
