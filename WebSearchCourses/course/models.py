@@ -34,10 +34,10 @@ class Subject(models.Model):
 
 class Course(models.Model):
     name        = models.TextField(blank=True, null=True)
-    language    = models.ForeignKey(Language, blank=True, null=True, on_delete=models.DO_NOTHING)
-    level       = models.ForeignKey(Level, blank=True, null=True, on_delete=models.DO_NOTHING)
+    language    = models.ManyToManyField(Language, blank=True)
+    level       = models.ManyToManyField(Level, blank=True)
     description = models.TextField(blank=True, null=True)
-    subject     = models.ForeignKey(Subject, blank=True, null=True, on_delete=models.DO_NOTHING)
+    subject     = models.ManyToManyField(Subject, blank=True)
     length      = models.CharField(max_length=255, blank=True, null=True)
     effort      = models.CharField(max_length=255, blank=True, null=True)
     price       = models.CharField(max_length=255, blank=True, null=True)
