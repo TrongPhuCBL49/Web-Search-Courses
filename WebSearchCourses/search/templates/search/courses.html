@@ -17,9 +17,11 @@
     <link rel="stylesheet" href="{% static 'edustage/vendors/owl-carousel/owl.carousel.min.css' %}" />
     <link rel="stylesheet" href="{% static 'edustage/vendors/nice-select/css/nice-select.css' %}" />
     <!-- main css -->
-    <link rel="stylesheet" href="{% static 'edustage/css/style.css' %}" />
+    <link rel="stylesheet" href="{% static 'edustage/css/style.css' %}"/>
     <link rel="stylesheet" href="{% static 'academica/css/style.css' %}"/>
 	  <link rel="stylesheet" href="{% static 'academica/css/pagination.css' %}"/>
+	  <link rel="stylesheet" href="{% static 'academica/css/flaticon.css' %}"/>
+	  <link rel="stylesheet" href="{% static 'academica/css/font-awesome.min.css' %}"/>
     <style>
       .row-select {
         display: flex;
@@ -173,11 +175,11 @@
           <div class="row justify-content-center">
             <div class="col-lg-6">
               <div class="banner_content text-center">
-                <h2>Courses</h2>
-                <div class="page_link">
+                <h2>What do you want to learn?</h2>
+                {% comment %} <div class="page_link">
                   <a href="index.html">Home</a>
                   <a href="courses.html">Courses</a>
-                </div>
+                </div> {% endcomment %}
               </div>
             </div>
           </div>
@@ -203,15 +205,13 @@
                   <div class="my-select-wrapper">
                     <label
                       style="margin: 0; margin-right: 8px;"
-                    >Level: </label>
+                    >Subject: </label>
                     <select
                       class="my-select"
                     >
-                      <option value="1">Education & Teacher Training</option>
-                      <option value="2">Dhaka</option>
-                      <option value="3">Dilli</option>
-                      <option value="4">Newyork</option>
-                      <option value="5">Islamabad</option>
+                    {% for subject in subjects %}
+                      <option>{{ subject.name }}</option>                    
+                    {% endfor %}
                     </select>
                   </div>
 
@@ -222,11 +222,9 @@
                     <select
                       class="my-select"
                     >
-                      <option value="1">Education & Teacher Training</option>
-                      <option value="2">Dhaka</option>
-                      <option value="3">Dilli</option>
-                      <option value="4">Newyork</option>
-                      <option value="5">Islamabad</option>
+                    {% for level in levels %}
+                      <option>{{ level.name }}</option>                    
+                    {% endfor %}
                     </select>
                   </div>
                 </div>
@@ -234,30 +232,26 @@
                   <div class="my-select-wrapper">
                     <label
                       style="margin: 0; margin-right: 8px;"
-                    >Level: </label>
+                    >Language: </label>
                     <select
                       class="my-select"
                     >
-                      <option value="1">Education & Teacher Training</option>
-                      <option value="2">Dhaka</option>
-                      <option value="3">Dilli</option>
-                      <option value="4">Newyork</option>
-                      <option value="5">Islamabad</option>
+                    {% for language in languages %}
+                      <option>{{ language.name }}</option>                    
+                    {% endfor %}
                     </select>
                   </div>
 
                   <div class="my-select-wrapper">
                     <label
                       style="margin: 0; margin-right: 8px;"
-                    >Subject: </label>
+                    >Institution: </label>
                     <select
                       class="my-select"
                     >
-                      <option value="1">Education & Teacher Training</option>
-                      <option value="2">Dhaka</option>
-                      <option value="3">Dilli</option>
-                      <option value="4">Newyork</option>
-                      <option value="5">Islamabad</option>
+                    {% for institution in institutions %}
+                      <option>{{ institution.name }}</option>                    
+                    {% endfor %}
                     </select>
                   </div>
                 </div>
@@ -283,16 +277,17 @@
         </div>
         <div class="row courses-page">
           <!-- single course -->
+          {% for course in courses %}
           <div class="col-lg-4 col-md-6">
             <div class="course-item">
               <figure class="course-preview">
-                <img src="img/courses/1.jpg" alt="">
+                <img src="{{ course.link_image }}" alt="">
                 <div class="price">$25</div>
               </figure>
               <div class="course-content">
                 <div class="cc-text">
-                  <h5>Italian for Begginers & Advanced Course</h5>
-                  <p>Donec molestie tincidunt tellus sit amet aliquet. Proin auctor nisi ut purus eleifend, et auctor lorem hendrerit. </p>
+                  <h5>{{ course.name }}</h5>
+                  <p>{{ course.description }}</p>
                   <span><i class="flaticon-student-2"></i>20</span>
                   <span><i class="flaticon-placeholder"></i>3</span>
                   <div class="rating">
@@ -304,14 +299,15 @@
                   </div>
                 </div>
                 <div class="seller-info">
-                  <div class="seller-pic set-bg" data-setbg="img/courses/sellers/1.jpg"></div>
+                  <div class="seller-pic set-bg" data-setbg="{% static 'academica/img/courses/sellers/1.jpg' %}"></div>
                   <h6>By Sebastian Smith, <span>Italian Teacher</span></h6>
                 </div>
               </div>
             </div>
           </div>
+          {% endfor %}
           <!-- course -->
-          <div class="col-lg-4 col-md-6">
+          {% comment %} <div class="col-lg-4 col-md-6">
             <div class="course-item">
               <figure class="course-preview">
                 <img src="img/courses/2.jpg" alt="">
@@ -449,13 +445,13 @@
                 </div>
               </div>
             </div>
-          </div>
+          </div> {% endcomment %}
 
-          <div class="col-lg-12">
+          {% comment %} <div class="col-lg-12">
             <div class="pagination-wrapper">
               <div id="pagination"></div>
             </div>
-          </div>
+          </div> {% endcomment %}
           <!-- <div class="col-lg-12">
             <div class="owl-carousel active_course">
               <div class="single_course">
@@ -806,7 +802,7 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
     <script src="{% static 'edustage/js/theme.js' %}"></script>
     <script type="text/javascript">
       const data = [];
-      for(let i = 1; i <= {{ size }}; i ++) data.push(i);
+      for(let i = 1; i <= {{ courses_size }}; i ++) data.push(i);
       $('#pagination').pagination({
         dataSource: data,
         pageSize: 2,

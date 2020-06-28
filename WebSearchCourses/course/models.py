@@ -32,12 +32,21 @@ class Subject(models.Model):
     def __unicode__(self):
         return self.name
 
+class Institution(models.Model):
+    name = models.CharField(max_length=255, blank=True, null=True)
+
+    def __str__(self):
+        return self.name
+
+    def __unicode__(self):
+        return self.name
+
 class Course(models.Model):
     name        = models.TextField(blank=True, null=True)
-    language    = models.ManyToManyField(Language, blank=True)
-    level       = models.ManyToManyField(Level, blank=True)
+    language    = models.TextField(blank=True, null=True)
+    level       = models.TextField(blank=True, null=True)
     description = models.TextField(blank=True, null=True)
-    subject     = models.ManyToManyField(Subject, blank=True)
+    subject     = models.TextField(blank=True, null=True)
     length      = models.CharField(max_length=255, blank=True, null=True)
     effort      = models.CharField(max_length=255, blank=True, null=True)
     price       = models.CharField(max_length=255, blank=True, null=True)

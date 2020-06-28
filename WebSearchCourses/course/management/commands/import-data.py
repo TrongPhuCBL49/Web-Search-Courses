@@ -1,7 +1,7 @@
 import json
 
 from django.core.management.base import BaseCommand
-from course.models import Language, Level, Subject, Course
+from course.models import Language, Level, Subject, Course, Institution
 
 with open("edx_course_data.json") as f:
     data = json.load(f)
@@ -13,6 +13,7 @@ class Command(BaseCommand):
         self.import_level()
         self.import_subject()
         self.import_course()
+        self.import_institution()
     
     def import_language(self):
         print("Start import Languages")
@@ -46,6 +47,16 @@ class Command(BaseCommand):
             if not Subject.objects.filter(name=name).exists():
                 Subject.objects.create(name=name)
         print("Import subjects done")
+
+    def import_institution(self):
+        print("Start import institutions")
+        institutions = {"HarvardX"}
+        for course in data:
+            institutions.add(course['institution'])
+        for name in institutions:
+            if not Institution.objects.filter(name=name).exists():
+                Institution.objects.create(name=name)
+        print("Import institutions done")
 
     def import_course(self):
         print("Start import courses")
