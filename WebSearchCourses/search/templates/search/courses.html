@@ -50,6 +50,37 @@
         justify-content: center;
         align-items: center;
       }
+      .flaticon-icon:before {
+        font-size: inherit;
+        color: rgb(131, 131, 131);
+      }
+      .nice-select .list {
+        overflow-y: scroll !important;
+        max-height: calc(40px * 5);
+      }
+      .result-image {
+        width: 100%;
+        height: 234px;
+        background-size: cover;
+        background-position: center;
+      }
+      .course-item-style {
+        flex: 1 0 auto;
+        display: flex;
+        flex-direction: column;
+      }
+      .course-content-style {
+        flex: 1 0 auto;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+      }
+      .cc-text-style {
+        flex: 1 0 auto;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+      }
     </style>
   </head>
 
@@ -187,11 +218,11 @@
       </div>
     </section>
     <!--================End Home Banner Area =================-->
-    <section class="multi-search-section">
+    <section class="multi-search-section" id="outside">
         <div class="msf-warp" style="overflow: initial;">
           <div class="container">
             <h5>Search your Course</h5>
-            <form class="multi-search-form" action="" method='post' novalidate="novalidate">
+            <form class="multi-search-form" action="" method='post' novalidate="novalidate" id="search-form">
               {% csrf_token %}
               <div style="display: flex; flex-direction: column; justify-content: flex-start; align-items: flex-start; width: 100%;">
                 <div style="display: flex; flex-direction: row; justify-content: flex-start; align-items: center; width: 100%;">
@@ -200,11 +231,16 @@
                     type="text"
                     name="search_text"
                     placeholder="Course"
+                    {% if search_text %}
+                    value={{ search_text }}
+                    {% endif %}
                   >
                   <button type="submit" value="submit" class="site-btn">Search <i class="fa fa-angle-right"></i></button>
                 </div>
                 <div class="row-select">
-                  <div class="my-select-wrapper">
+                  <div class="my-select-wrapper"
+                    id="subject-select"
+                  >
                     <label
                       style="margin: 0; margin-right: 8px;"
                     >Subject: </label>
@@ -219,7 +255,9 @@
                     </select>
                   </div>
 
-                  <div class="my-select-wrapper">
+                  <div class="my-select-wrapper"
+                    id="level-select"
+                  >
                     <label
                       style="margin: 0; margin-right: 8px;"
                     >Level: </label>
@@ -234,7 +272,9 @@
                     </select>
                   </div>
                 </div>
-                <div class="row-select">
+                <div class="row-select"
+                  id="language-select"                
+                >
                   <div class="my-select-wrapper">
                     <label
                       style="margin: 0; margin-right: 8px;"
@@ -243,14 +283,16 @@
                       name="language"
                       class="my-select"
                     >
-                      <option>All</option>                                        
+                      <option value="All">All</option>                                        
                     {% for language in languages %}
-                      <option>{{ language.name }}</option>                    
+                      <option value="{{ language.name }}">{{ language.name }}</option>                    
                     {% endfor %}
                     </select>
                   </div>
 
-                  <div class="my-select-wrapper">
+                  <div class="my-select-wrapper"
+                    id="institution-select"
+                  >
                     <label
                       style="margin: 0; margin-right: 8px;"
                     >Institution: </label>
@@ -274,7 +316,7 @@
         </div>
       </section>
     <!--================ Start Popular Courses Area =================-->
-    <div class="popular_courses section_gap_top">
+    <div class="popular_courses section_gap_top" id="result">
       <div class="container">
         <div class="row justify-content-center">
           <div class="col-lg-5">
@@ -289,24 +331,28 @@
         <div class="row courses-page">
           <!-- single course -->
           {% for course in courses %}
-          <div class="col-lg-4 col-md-6">
-            <div class="course-item">
-              <figure class="course-preview">
-                <img src="{{ course.link_image }}" alt="">
+          <div class="col-lg-4 col-md-6" style="display: flex; flex-direction: column;">
+            <div class="course-item course-item-style">
+              <figure class="course-preview" style="flex: 0 0 auto;">
+                <div class="result-image" style="background-image: url({{ course.link_image }})">
                 <div class="price">$25</div>
               </figure>
-              <div class="course-content">
-                <div class="cc-text">
+              <div class="course-content course-content-style">
+                <div class="cc-text cc-text-style">
+                  <div style="display: flex; flex-direction: column;">
                   <h5>{{ course.name }}</h5>
                   <p>{{ course.description }}</p>
-                  <span><i class="flaticon-student-2"></i>20</span>
-                  <span><i class="flaticon-placeholder"></i>3</span>
-                  <div class="rating">
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star i-fade"></i>
+                  </div>
+                  <div>
+                    <span><i class="flaticon-student-2 flaticon-icon"></i>20</span>
+                    <span><i class="flaticon-placeholder flaticon-icon"></i>3</span>
+                    <div class="rating">
+                      <i class="fa fa-star"></i>
+                      <i class="fa fa-star"></i>
+                      <i class="fa fa-star"></i>
+                      <i class="fa fa-star"></i>
+                      <i class="fa fa-star i-fade"></i>
+                    </div>
                   </div>
                 </div>
                 <div class="seller-info">
@@ -318,253 +364,11 @@
           </div>
           {% endfor %}
           <!-- course -->
-          {% comment %} <div class="col-lg-4 col-md-6">
-            <div class="course-item">
-              <figure class="course-preview">
-                <img src="img/courses/2.jpg" alt="">
-                <div class="price">$25</div>
-              </figure>
-              <div class="course-content">
-                <div class="cc-text">
-                  <h5>English Literature Advanced Course</h5>
-                  <p>Donec molestie tincidunt tellus sit amet aliquet. Proin auctor nisi ut purus eleifend, et auctor lorem hendrerit. </p>
-                  <span><i class="flaticon-student-2"></i>20</span>
-                  <span><i class="flaticon-placeholder"></i>3</span>
-                  <div class="rating">
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star i-fade"></i>
-                  </div>
-                </div>
-                <div class="seller-info">
-                  <div class="seller-pic set-bg" data-setbg="img/courses/sellers/2.jpg"></div>
-                  <h6>By Maria Williams, <span>English Teacher</span></h6>
-                </div>
-              </div>
-            </div>
-          </div>
-          <!-- course -->
-          <div class="col-lg-4 col-md-6">
-            <div class="course-item">
-              <figure class="course-preview">
-                <img src="img/courses/3.jpg" alt="">
-                <div class="price">$25</div>
-              </figure>
-              <div class="course-content">
-                <div class="cc-text">
-                  <h5>Portrait Photography Course for Begginers</h5>
-                  <p>Donec molestie tincidunt tellus sit amet aliquet. Proin auctor nisi ut purus eleifend, et auctor lorem hendrerit. </p>
-                  <span><i class="flaticon-student-2"></i>20</span>
-                  <span><i class="flaticon-placeholder"></i>3</span>
-                  <div class="rating">
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star i-fade"></i>
-                  </div>
-                </div>
-                <div class="seller-info">
-                  <div class="seller-pic set-bg" data-setbg="img/courses/sellers/3.jpg"></div>
-                  <h6>By Jack Smith, <span>Photographer</span></h6>
-                </div>
-              </div>
-            </div>
-          </div>
-          <!-- course -->
-          <div class="col-lg-4 col-md-6">
-            <div class="course-item">
-              <figure class="course-preview">
-                <img src="img/courses/4.jpg" alt="">
-                <div class="price">$25</div>
-              </figure>
-              <div class="course-content">
-                <div class="cc-text">
-                  <h5>Italian for Begginers & Advanced Course</h5>
-                  <p>Donec molestie tincidunt tellus sit amet aliquet. Proin auctor nisi ut purus eleifend, et auctor lorem hendrerit. </p>
-                  <span><i class="flaticon-student-2"></i>20</span>
-                  <span><i class="flaticon-placeholder"></i>3</span>
-                  <div class="rating">
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star i-fade"></i>
-                  </div>
-                </div>
-                <div class="seller-info">
-                  <div class="seller-pic set-bg" data-setbg="img/courses/sellers/1.jpg"></div>
-                  <h6>By Sebastian Smith, <span>Italian Teacher</span></h6>
-                </div>
-              </div>
-            </div>
-          </div>
-          <!-- course -->
-          <div class="col-lg-4 col-md-6">
-            <div class="course-item">
-              <figure class="course-preview">
-                <img src="img/courses/5.jpg" alt="">
-                <div class="price">$25</div>
-              </figure>
-              <div class="course-content">
-                <div class="cc-text">
-                  <h5>English Literature Advanced Course</h5>
-                  <p>Donec molestie tincidunt tellus sit amet aliquet. Proin auctor nisi ut purus eleifend, et auctor lorem hendrerit. </p>
-                  <span><i class="flaticon-student-2"></i>20</span>
-                  <span><i class="flaticon-placeholder"></i>3</span>
-                  <div class="rating">
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star i-fade"></i>
-                  </div>
-                </div>
-                <div class="seller-info">
-                  <div class="seller-pic set-bg" data-setbg="img/courses/sellers/2.jpg"></div>
-                  <h6>By Maria Williams, <span>English Teacher</span></h6>
-                </div>
-              </div>
-            </div>
-          </div>
-          <!-- course -->
-          <div class="col-lg-4 col-md-6">
-            <div class="course-item">
-              <figure class="course-preview">
-                <img src="img/courses/6.jpg" alt="">
-                <div class="price">$25</div>
-              </figure>
-              <div class="course-content">
-                <div class="cc-text">
-                  <h5>Portrait Photography Course for Begginers</h5>
-                  <p>Donec molestie tincidunt tellus sit amet aliquet. Proin auctor nisi ut purus eleifend, et auctor lorem hendrerit. </p>
-                  <span><i class="flaticon-student-2"></i>20</span>
-                  <span><i class="flaticon-placeholder"></i>3</span>
-                  <div class="rating">
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star i-fade"></i>
-                  </div>
-                </div>
-                <div class="seller-info">
-                  <div class="seller-pic set-bg" data-setbg="img/courses/sellers/3.jpg"></div>
-                  <h6>By Jack Smith, <span>Photographer</span></h6>
-                </div>
-              </div>
-            </div>
-          </div> {% endcomment %}
-
           <div class="col-lg-12">
             <div class="pagination-wrapper">
               <div id="pagination"></div>
             </div>
           </div>
-          <!-- <div class="col-lg-12">
-            <div class="owl-carousel active_course">
-              <div class="single_course">
-                <div class="course_head">
-                  <img class="img-fluid" src="img/courses/c1.jpg" alt="" />
-                </div>
-                <div class="course_content">
-                  <span class="price">$25</span>
-                  <span class="tag mb-4 d-inline-block">design</span>
-                  <h4 class="mb-3">
-                    <a href="course-details.html">Custom Product Design</a>
-                  </h4>
-                  <p>
-                    One make creepeth man bearing their one firmament won't fowl
-                    meat over sea
-                  </p>
-                  <div
-                    class="course_meta d-flex justify-content-lg-between align-items-lg-center flex-lg-row flex-column mt-4"
-                  >
-                    <div class="authr_meta">
-                      <img src="img/courses/author1.png" alt="" />
-                      <span class="d-inline-block ml-2">Cameron</span>
-                    </div>
-                    <div class="mt-lg-0 mt-3">
-                      <span class="meta_info mr-4">
-                        <a href="#"> <i class="ti-user mr-2"></i>25 </a>
-                      </span>
-                      <span class="meta_info"
-                        ><a href="#"> <i class="ti-heart mr-2"></i>35 </a></span
-                      >
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div class="single_course">
-                <div class="course_head">
-                  <img class="img-fluid" src="img/courses/c2.jpg" alt="" />
-                </div>
-                <div class="course_content">
-                  <span class="price">$25</span>
-                  <span class="tag mb-4 d-inline-block">design</span>
-                  <h4 class="mb-3">
-                    <a href="course-details.html">Social Media Network</a>
-                  </h4>
-                  <p>
-                    One make creepeth man bearing their one firmament won't fowl
-                    meat over sea
-                  </p>
-                  <div
-                    class="course_meta d-flex justify-content-lg-between align-items-lg-center flex-lg-row flex-column mt-4"
-                  >
-                    <div class="authr_meta">
-                      <img src="img/courses/author2.png" alt="" />
-                      <span class="d-inline-block ml-2">Cameron</span>
-                    </div>
-                    <div class="mt-lg-0 mt-3">
-                      <span class="meta_info mr-4">
-                        <a href="#"> <i class="ti-user mr-2"></i>25 </a>
-                      </span>
-                      <span class="meta_info"
-                        ><a href="#"> <i class="ti-heart mr-2"></i>35 </a></span
-                      >
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div class="single_course">
-                <div class="course_head">
-                  <img class="img-fluid" src="img/courses/c3.jpg" alt="" />
-                </div>
-                <div class="course_content">
-                  <span class="price">$25</span>
-                  <span class="tag mb-4 d-inline-block">design</span>
-                  <h4 class="mb-3">
-                    <a href="course-details.html">Computer Engineering</a>
-                  </h4>
-                  <p>
-                    One make creepeth man bearing their one firmament won't fowl
-                    meat over sea
-                  </p>
-                  <div
-                    class="course_meta d-flex justify-content-lg-between align-items-lg-center flex-lg-row flex-column mt-4"
-                  >
-                    <div class="authr_meta">
-                      <img src="img/courses/author3.png" alt="" />
-                      <span class="d-inline-block ml-2">Cameron</span>
-                    </div>
-                    <div class="mt-lg-0 mt-3">
-                      <span class="meta_info mr-4">
-                        <a href="#"> <i class="ti-user mr-2"></i>25 </a>
-                      </span>
-                      <span class="meta_info"
-                        ><a href="#"> <i class="ti-heart mr-2"></i>35 </a></span
-                      >
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div> -->
         </div>
       </div>
     </div>
@@ -825,8 +629,43 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
               const pageSize = pagination.pageSize;
               $('#pageNo-input').val(pageNo);
               $('#pageSize-input').val(pageSize);
+              if (pageNo !== {{ pageNo }} && pageSize === {{ pageSize }}) $('#search-form').submit();
           }
         })
+        
+        $(window).scrollTop($('#result').offset().top);
+        const subject_text = "{{ subject_text }}"
+        const level_text = "{{ level_text }}"
+        const language_text = "{{ language_text }}"
+        const institution_text = "{{ institution_text }}"
+        $('#subject-select .list li').each(function() {
+          console.log($(this).html());
+          if ($(this).html() === subject_text) {
+            $(this).click();
+          }
+          $('#outside').click();
+        }) 
+        $('#level-select .list li').each(function() {
+          console.log($(this).html());
+          if ($(this).html() === level_text) {
+            $(this).click();
+          }
+          $('#outside').click();
+        })
+        $('#language-select .list li').each(function() {
+          console.log($(this).html());
+          if ($(this).html() === language_text) {
+            $(this).click();
+          }
+          $('#outside').click();
+        })
+        $('#institution-select .list li').each(function() {
+          console.log($(this).html());
+          if ($(this).html() === institution_text) {
+            $(this).click();
+          }
+          $('#outside').click();
+        })    
       }
     </script>
   </body>

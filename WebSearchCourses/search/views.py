@@ -13,9 +13,9 @@ from course.models import Course, Language, Subject, Level, Institution
 #     return render(request, 'search/search.html', {'courses': courses})
 
 def search(request):
-    course_of_page = 3
+    pageSize = 6
+
     pageNo = request.POST.get('pageNo')
-    pageSize = course_of_page
     search_text = request.POST.get('search_text')
     subject_text = request.POST.get('subject')
     language_text = request.POST.get('language')
@@ -29,9 +29,19 @@ def search(request):
     print('institution_text', institution_text)
     print('pageNo', pageNo)
     print('pageSize', pageSize)
+    # courses = Course.objects.all()
 
-    courses = Course.objects.all()
-    courses_size = len(courses)
+    if search_text:
+        courses = Course.objects.all()
+        search_courses = courses
+        # search_courses = CourseDocument.search().query('match', name=search_text).to_queryset()
+        # search_courses = CourseDocument.search().filter('term', language=language_text).to_queryset()
+        # courses = search_courses[(int(pageNo)-1)*int(pageSize):int(pageNo)*int(pageSize)]
+    else:
+        courses = []
+        search_courses = []
+
+    courses_size = len(search_courses)
     subjects = Subject.objects.all()
     languages = Language.objects.all()
     levels = Level.objects.all()
@@ -39,14 +49,16 @@ def search(request):
 
     if search_text is None:
         pageNo = 0
-        pageSize = course_of_page
-        courses = None
-        courses_size = 0
-
-    
+        # courses = None
+        # courses_size = 0
 
     data = {
          'courses': courses,
+         'search_text': search_text,
+         'subject_text': subject_text,
+         'level_text': level_text,
+         'language_text': language_text,
+         'institution_text': institution_text,
          'courses_size': courses_size,
          'subjects': subjects,
          'languages': languages,
@@ -55,7 +67,7 @@ def search(request):
          'pageNo': pageNo,
          'pageSize': pageSize,
     }
-    print(data)
+    print('data', data)
     return render(request, 'search/courses.html', data)
 
 def search2(request):
