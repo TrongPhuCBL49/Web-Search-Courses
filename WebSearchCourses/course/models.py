@@ -43,6 +43,7 @@ class Institution(models.Model):
 
 class Course(models.Model):
     name        = models.TextField(blank=True, null=True)
+    timestamp   = models.DateTimeField(blank=True, null=True)
     language    = models.TextField(blank=True, null=True)
     level       = models.TextField(blank=True, null=True)
     description = models.TextField(blank=True, null=True)

@@ -191,15 +191,17 @@
         <div class="msf-warp" style="overflow: initial;">
           <div class="container">
             <h5>Search your Course</h5>
-            <form class="multi-search-form">
+            <form class="multi-search-form" action="" method='post' novalidate="novalidate">
+              {% csrf_token %}
               <div style="display: flex; flex-direction: column; justify-content: flex-start; align-items: flex-start; width: 100%;">
                 <div style="display: flex; flex-direction: row; justify-content: flex-start; align-items: center; width: 100%;">
                   <input
                     style="flex: 1 0 auto; font-size: 14px;"
                     type="text"
+                    name="search_text"
                     placeholder="Course"
                   >
-                  <button class="site-btn">Search <i class="fa fa-angle-right"></i></button>
+                  <button type="submit" value="submit" class="site-btn">Search <i class="fa fa-angle-right"></i></button>
                 </div>
                 <div class="row-select">
                   <div class="my-select-wrapper">
@@ -207,8 +209,10 @@
                       style="margin: 0; margin-right: 8px;"
                     >Subject: </label>
                     <select
+                      name="subject"
                       class="my-select"
                     >
+                      <option>All</option>                                        
                     {% for subject in subjects %}
                       <option>{{ subject.name }}</option>                    
                     {% endfor %}
@@ -220,8 +224,10 @@
                       style="margin: 0; margin-right: 8px;"
                     >Level: </label>
                     <select
+                      name="level"
                       class="my-select"
                     >
+                      <option>All</option>                                        
                     {% for level in levels %}
                       <option>{{ level.name }}</option>                    
                     {% endfor %}
@@ -234,8 +240,10 @@
                       style="margin: 0; margin-right: 8px;"
                     >Language: </label>
                     <select
+                      name="language"
                       class="my-select"
                     >
+                      <option>All</option>                                        
                     {% for language in languages %}
                       <option>{{ language.name }}</option>                    
                     {% endfor %}
@@ -247,15 +255,18 @@
                       style="margin: 0; margin-right: 8px;"
                     >Institution: </label>
                     <select
+                      name="institution"
                       class="my-select"
                     >
+                      <option>All</option>                                        
                     {% for institution in institutions %}
                       <option>{{ institution.name }}</option>                    
                     {% endfor %}
                     </select>
                   </div>
                 </div>
-                
+                <input type="hidden" name="pageNo" id="pageNo-input" value="1">
+                <input type="hidden" name="pageSize" id="pageSize-input" value={{ pageSize }}>
               </div>
               
             </form>
@@ -447,11 +458,11 @@
             </div>
           </div> {% endcomment %}
 
-          {% comment %} <div class="col-lg-12">
+          <div class="col-lg-12">
             <div class="pagination-wrapper">
               <div id="pagination"></div>
             </div>
-          </div> {% endcomment %}
+          </div>
           <!-- <div class="col-lg-12">
             <div class="owl-carousel active_course">
               <div class="single_course">
@@ -802,38 +813,21 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
     <script src="{% static 'edustage/js/theme.js' %}"></script>
     <script type="text/javascript">
       const data = [];
-      for(let i = 1; i <= {{ courses_size }}; i ++) data.push(i);
-      $('#pagination').pagination({
-        dataSource: data,
-        pageSize: 2,
-        callback: function(data, pagination) {
-          // console.log('triggered')
-            // template method of yourself
-            // var html = template(data);
-            // dataContainer.html(html);            
-            const pageNum = pagination.pageNumber;
-            const pageSize = pagination.pageSize;
-            let url = window.location.href;
-            const queryString = window.location.search;
-            const urlParams = new URLSearchParams(queryString);
-            if (urlParams.get('pageNo')) {
-              if (pageNum == urlParams.get('pageNo') && pageSize == urlParams.get('pageSize')) return;
-            }
-            if (url.lastIndexOf('&') === -1) {
-              url = url.slice(0, url.lastIndexOf('/')) + '?';
-            }
-            else {
-              url = url.slice(0, url.lastIndexOf('&'));
-              if (url.lastIndexOf('&') === -1) {
-                url = url.slice(0, url.lastIndexOf('?')) + '?';
-              } else {
-                url = url.slice(0, url.lastIndexOf('&')) + '&';
-              }
-            }
-            console.log(`${url}pageNo=${pageNum}&pageSize=${pageSize}`);
-            window.location.href = `${url}pageNo=${pageNum}&pageSize=${pageSize}`;
-        }
-      })
+      const n = {{ courses_size }};
+      if (n > 0) {
+        for(let i = 1; i <= {{ courses_size }}; i ++) data.push(i);
+        $('#pagination').pagination({
+          dataSource: data,
+          pageNumber: {{ pageNo }},
+          pageSize: {{ pageSize }},
+          callback: function(data, pagination) {         
+              const pageNo = pagination.pageNumber;
+              const pageSize = pagination.pageSize;
+              $('#pageNo-input').val(pageNo);
+              $('#pageSize-input').val(pageSize);
+          }
+        })
+      }
     </script>
   </body>
 </html>

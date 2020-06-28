@@ -15,6 +15,16 @@ class CourseDocument(Document):
         model = Course
 
         fields = [
-            'id', 'name', 'description', 'length', 'effort',
-            'price', 'institution', 'about', 'content'
+            'id', 
+            'name', 
+            'language',
+            'level',
+            'description', 
+            'subject',
+            'length', 
+            'effort',
+            'price', 
+            'institution', 
+            'about', 
+            'content'
         ]

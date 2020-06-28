@@ -2,6 +2,7 @@ import json
 
 from django.core.management.base import BaseCommand
 from course.models import Language, Level, Subject, Course, Institution
+from datetime import datetime
 
 with open("edx_course_data.json") as f:
     data = json.load(f)
@@ -62,10 +63,11 @@ class Command(BaseCommand):
         print("Start import courses")
         for course in data:
             name        = course['name']
-            languages   = [Language.objects.filter(name=name)[0] for name in course['language']]
-            levels      = [Level.objects.filter(name=name)[0] for name in course['level']]
+            timestamp   = datetime.fromtimestamp(course['date'])
+            languages   = ', '.join(course['language'])
+            level      = ', '.join(course['level'])
             description = course['description']
-            subjects    = [Subject.objects.filter(name=name)[0] for name in course['subjects']]
+            subjects    = ', '.join(course['subjects'])
             length      = course['length']
             effort      = course['effort']
             price       = course['price']
@@ -73,10 +75,15 @@ class Command(BaseCommand):
             about       = course['about-course']
             content     = course['content-course']
             link_image  = course['link-image']
+            print(course['name'], course['subjects'])
             if not Course.objects.filter(name=name, length=length).exists():
                 new_course = Course(
                     name=name,
+                    timestamp=timestamp,
+                    language=languages,
+                    level=level,
                     description=description,
+                    subject=subjects,
                     length=length,
                     effort=effort,
                     price=price,
@@ -86,11 +93,5 @@ class Command(BaseCommand):
                     link_image=link_image
                 )
                 new_course.save()
-                for language in languages:
-                    new_course.language.add(language)
-                for level in levels:
-                    new_course.level.add(level)
-                for subject in subjects:
-                    new_course.subject.add(subject)
         print("Import courses done")
         
