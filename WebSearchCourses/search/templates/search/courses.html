@@ -325,6 +325,7 @@
               <p>
                 Replenish man have thing gathering lights yielding shall you
               </p>
+              <h5>{{ courses_size }} result</h5>
             </div>
           </div>
         </div>
@@ -334,14 +335,20 @@
           <div class="col-lg-4 col-md-6" style="display: flex; flex-direction: column;">
             <div class="course-item course-item-style">
               <figure class="course-preview" style="flex: 0 0 auto;">
-                <div class="result-image" style="background-image: url({{ course.link_image }})">
-                <div class="price">$25</div>
+                {% comment %} <a href="{{course.get_absolute_url}}"> {% endcomment %}
+                  <div class="result-image" style="background-image: url({{ course.link_image }})">
+                {% comment %} </a> {% endcomment %}
+                {% comment %} <div class="price">$25</div> {% endcomment %}
               </figure>
               <div class="course-content course-content-style">
                 <div class="cc-text cc-text-style">
                   <div style="display: flex; flex-direction: column;">
-                  <h5>{{ course.name }}</h5>
+                  <a href="{{course.get_absolute_url}}">
+                    <h5>{{ course.name }}</h5>                  
+                  </a>
+                  {% comment %} <h6>{{ course.timestamp }}</h6> {% endcomment %}
                   <p>{{ course.description }}</p>
+                  <h6>{{ course.timestamp }}</h6>
                   </div>
                   <div>
                     <span><i class="flaticon-student-2 flaticon-icon"></i>20</span>
@@ -354,6 +361,7 @@
                       <i class="fa fa-star i-fade"></i>
                     </div>
                   </div>
+                  {% comment %} <h6>{{ course.timestamp }}</h6> {% endcomment %}
                 </div>
                 <div class="seller-info">
                   <div class="seller-pic set-bg" data-setbg="{% static 'academica/img/courses/sellers/1.jpg' %}"></div>

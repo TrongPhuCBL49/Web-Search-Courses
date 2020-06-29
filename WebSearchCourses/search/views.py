@@ -1,8 +1,11 @@
 from django.shortcuts import render, redirect
+from django.views.generic import DetailView
 from .documents import CourseDocument
 from course.models import Course, Language, Subject, Level, Institution
 from elasticsearch_dsl.query import MultiMatch
 from elasticsearch_dsl import Q
+from django.http import Http404
+
 # Create your views here.
 
 # def search(request):
@@ -36,7 +39,10 @@ def search(request):
     if search_text or language_text:
         #courses = Course.objects.all()
         #search_courses = courses
-        q_search = Q("multi_match", query=search_text, fields=['name', 'description', 'about', 'content'])
+        if search_text != '':
+            q_search = Q("multi_match", query=search_text, fields=['name', 'description', 'about', 'content'])
+        else:
+            q_search = Q()
         if subject_text != 'All': 
             q_search = q_search & Q("match", subject=subject_text)
         if language_text != 'All': 
@@ -80,6 +86,42 @@ def search(request):
     }
     print('data', data)
     return render(request, 'search/courses.html', data)
+
+def course_detail_view(request, pk=None, *args, **kwargs):
+    instance = Course.objects.get_by_id(pk)
+    if instance is None:
+        raise Http404("Product doesn't exist")
+    context = {
+        'object': instance
+    }
+    return render(request, "search/product-detail.html", context)
+
+class CourseDetailSlugView(DetailView):
+    queryset = Course.objects.all()
+    template_name = "search/course-details.html"
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(CourseDetailSlugView, self).get_context_data(*args, **kwargs)
+        slug = self.kwargs.get('slug')
+        course = Course.objects.filter(slug=slug)
+        context['course'] = course.first()
+        return context
+
+
+    def get_object(self, *args, **kwargs):
+        request = self.request
+        slug = self.kwargs.get('slug')
+        #instance = get_object_or_404(Product, slug=slug, active=True)
+        try:
+            instance = Course.objects.get(slug=slug)
+        except Course.DoesNotExist:
+            raise Http404("Not found..")
+        except Course.MultipleObjectsReturned:
+            qs = Course.objects.filter(slug=slug)
+            instance = qs.first()
+        except:
+            raise Http404("Uhhmmm ")
+        return instance
 
 def search2(request):
     return render(request, 'search/courses2.html')

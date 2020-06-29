@@ -59,7 +59,7 @@ class Course(models.Model):
 
     def get_absolute_url(self):
         # return "/products/{slug}".format(slug=self.slug)
-        return reverse("course:detail", kwargs={"slug": self.slug})
+        return reverse("search:detail", kwargs={"slug": self.slug})
 
     def __str__(self):
         return self.name
