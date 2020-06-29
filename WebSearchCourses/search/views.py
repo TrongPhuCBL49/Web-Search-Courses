@@ -1,6 +1,8 @@
 from django.shortcuts import render, redirect
 from .documents import CourseDocument
 from course.models import Course, Language, Subject, Level, Institution
+from elasticsearch_dsl.query import MultiMatch
+from elasticsearch_dsl import Q
 # Create your views here.
 
 # def search(request):
@@ -31,12 +33,21 @@ def search(request):
     print('pageSize', pageSize)
     # courses = Course.objects.all()
 
-    if search_text:
-        courses = Course.objects.all()
-        search_courses = courses
-        # search_courses = CourseDocument.search().query('match', name=search_text).to_queryset()
-        # search_courses = CourseDocument.search().filter('term', language=language_text).to_queryset()
-        # courses = search_courses[(int(pageNo)-1)*int(pageSize):int(pageNo)*int(pageSize)]
+    if search_text or language_text:
+        #courses = Course.objects.all()
+        #search_courses = courses
+        q_search = Q("multi_match", query=search_text, fields=['name', 'description', 'about', 'content'])
+        if subject_text != 'All': 
+            q_search = q_search & Q("match", subject=subject_text)
+        if language_text != 'All': 
+            q_search = q_search & Q("match", language=language_text)
+        if level_text != 'All': 
+            q_search = q_search & Q("match", level=level_text)
+        if institution_text != 'All': 
+            q_search = q_search & Q("match", institution=institution_text)
+        search_courses = CourseDocument.search().query(q_search).to_queryset()
+        #search_courses = CourseDocument.search().filter('term', language=language_text, level=level_text).to_queryset()
+        courses = search_courses[(int(pageNo)-1)*int(pageSize):int(pageNo)*int(pageSize)]
     else:
         courses = []
         search_courses = []
