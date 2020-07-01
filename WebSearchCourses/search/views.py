@@ -3,7 +3,7 @@ from django.views.generic import DetailView
 from .documents import CourseDocument
 from course.models import Course, Language, Subject, Level, Institution
 from elasticsearch_dsl.query import MultiMatch
-from elasticsearch_dsl import Q
+from elasticsearch_dsl import Q, A
 from django.http import Http404
 
 # Create your views here.
@@ -18,7 +18,7 @@ from django.http import Http404
 #     return render(request, 'search/search.html', {'courses': courses})
 
 def search(request):
-    pageSize = 6
+    pageSize = 15
 
     pageNo = request.POST.get('pageNo')
     search_text = request.POST.get('search_text')
@@ -37,8 +37,6 @@ def search(request):
     # courses = Course.objects.all()
 
     if search_text or language_text:
-        #courses = Course.objects.all()
-        #search_courses = courses
         if search_text != '':
             q_search = Q("multi_match", query=search_text, fields=['name', 'description', 'about', 'content'])
         else:
@@ -51,8 +49,9 @@ def search(request):
             q_search = q_search & Q("match", level=level_text)
         if institution_text != 'All': 
             q_search = q_search & Q("match", institution=institution_text)
-        search_courses = CourseDocument.search().query(q_search).to_queryset()
-        #search_courses = CourseDocument.search().filter('term', language=language_text, level=level_text).to_queryset()
+
+        search_courses = CourseDocument.search()[0:2210].query(q_search).to_queryset()
+        print('search_courses: ', len(search_courses))
         courses = search_courses[(int(pageNo)-1)*int(pageSize):int(pageNo)*int(pageSize)]
     else:
         courses = []
@@ -66,8 +65,6 @@ def search(request):
 
     if search_text is None:
         pageNo = 0
-        # courses = None
-        # courses_size = 0
 
     data = {
          'courses': courses,
@@ -84,7 +81,8 @@ def search(request):
          'pageNo': pageNo,
          'pageSize': pageSize,
     }
-    print('data', data)
+    print('course size', data['courses_size'])
+    #print('data', data)
     return render(request, 'search/courses.html', data)
 
 def course_detail_view(request, pk=None, *args, **kwargs):

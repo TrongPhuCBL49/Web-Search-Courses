@@ -4,7 +4,7 @@ from django.core.management.base import BaseCommand
 from course.models import Language, Level, Subject, Course, Institution
 from datetime import datetime
 
-with open("edx_course_data.json") as f:
+with open("edx_data.json") as f:
     data = json.load(f)
 
 class Command(BaseCommand):
